@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.8.xsd
+                           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- AccessDeniedHandler Bean 정의 -->
+    <bean id="customAccessDenied" class="com.zerock.security.CustomAccessDeniedHandler" />
+
+    <!-- AuthenticationSuccessHandler Bean 정의 -->
+  <bean id="customLoginSuccess" class="com.zerock.security.CustomLoginSuccessHandler"></bean>
+    
+ <!--    <bean id="customPasswordEncoder" class="com.zerock.security.CustomNoOpPasswordEncoder"></bean> -->
+ 
+ <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+ 
+ <bean id="CustomUserDetailsService" class="com.zerock.security.CustomUserDetailsService"></bean>
+
+    <security:http>
+        <!-- URL 권한 설정 -->
+        <security:intercept-url pattern="/sample/all" access="permitAll" />
+        <security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')" />
+        <security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')" />
+
+        <!-- 커스텀 로그인 페이지 및 성공 핸들러 -->
+        <security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />
+        
+        <!-- <security:logout logout-url="/customLogout" invalidate-session="true" /> -->
+
+        <!-- CSRF 비활성화 -->
+        <security:csrf disabled="true" /> 
+
+        <!-- AccessDeniedHandler 설정 -->
+        <security:access-denied-handler ref="customAccessDenied" />
+        
+       <security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>  
+       
+       <!--로그아웃 시 쿠키 삭제  -->
+       
+       <security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me,JSESSION_ID"/> 
+        
+    </security:http>
+
+   <security:authentication-manager>
+    <security:authentication-provider user-service-ref="CustomUserDetailsService">
+        <security:password-encoder ref="bcryptPasswordEncoder" />
+    </security:authentication-provider>
+</security:authentication-manager>
+</beans>

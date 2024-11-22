@@ -1,0 +1,11 @@
+package com.zerock.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.zerock.domain.MemberVO;
+
+@Mapper
+public interface Membermapper {
+ 
+	public MemberVO read(String userid);
+}

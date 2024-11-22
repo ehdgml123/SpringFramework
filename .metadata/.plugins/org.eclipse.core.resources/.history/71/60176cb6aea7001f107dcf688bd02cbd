@@ -1,0 +1,8 @@
+package com.zerock.mapper;
+
+import com.zerock.domain.MemberVO;
+
+public interface Membermapper {
+ 
+	public MemberVO read(String userid);
+}

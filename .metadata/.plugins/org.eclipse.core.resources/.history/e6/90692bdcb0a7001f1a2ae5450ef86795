@@ -1,0 +1,6 @@
+package com.zerock.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.zerock.domain.MemberVO;
+
